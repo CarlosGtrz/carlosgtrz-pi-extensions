@@ -178,6 +178,7 @@ function getOAuthCandidates(): string[] {
 		addCandidate(candidates, join(binDir, "node_modules", "@mariozechner", "pi-ai", "dist", "oauth.js"));
 	}
 
+	addCandidate(candidates, "/opt/homebrew/lib/node_modules/@mariozechner/pi-ai/dist/oauth.js");
 	addCandidate(candidates, "/usr/local/lib/node_modules/@mariozechner/pi-ai/dist/oauth.js");
 	addCandidate(candidates, "/usr/lib/node_modules/@mariozechner/pi-ai/dist/oauth.js");
 
