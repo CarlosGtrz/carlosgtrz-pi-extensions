@@ -1,0 +1,33 @@
+{
+  "name": "carlosgtrz-pi-extensions",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Monorepo for CarlosGtrz pi extensions published as npm packages.",
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "check": "tsc -p tsconfig.json --noEmit",
+    "publish:codex-aliases": "npm publish --access public -w @carlosgtrz/pi-codex-aliases",
+    "publish:ansi-tools": "npm publish --access public -w @carlosgtrz/pi-ansi-tools"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CarlosGtrz/pi-extensions.git"
+  },
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "pi-coding-agent"
+  ],
+  "author": "CarlosGtrz",
+  "license": "MIT",
+  "devDependencies": {
+    "@mariozechner/pi-ai": "*",
+    "@mariozechner/pi-coding-agent": "*",
+    "@types/node": "^22.0.0",
+    "typebox": "*",
+    "typescript": "^5.9.0"
+  }
+}

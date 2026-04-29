@@ -1,0 +1,42 @@
+{
+  "name": "@carlosgtrz/pi-ansi-tools",
+  "version": "0.1.0",
+  "description": "Pi extension with read_ansi, write_ansi, and edit_ansi tools for legacy-encoded text files.",
+  "type": "module",
+  "exports": "./src/index.ts",
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "pi-coding-agent",
+    "ansi",
+    "windows-1252",
+    "clarion"
+  ],
+  "author": "CarlosGtrz",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CarlosGtrz/pi-extensions.git",
+    "directory": "packages/ansi-tools"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "iconv-lite": "^0.6.3"
+  },
+  "peerDependencies": {
+    "@mariozechner/pi-coding-agent": "*",
+    "typebox": "*"
+  },
+  "pi": {
+    "extensions": [
+      "./src/index.ts"
+    ]
+  }
+}
