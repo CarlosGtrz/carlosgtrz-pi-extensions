@@ -7,7 +7,7 @@ import type {
 	OAuthCredentials,
 	OAuthLoginCallbacks,
 } from "@mariozechner/pi-ai";
-import { existsSync } from "node:fs";
+import { existsSync, realpathSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -116,21 +116,16 @@ export default async function codexAliases(pi: ExtensionAPI) {
 async function loadOpenAICodexOAuth(): Promise<OpenAICodexOAuth> {
 	// Pi's extension loader resolves @mariozechner/pi-ai from Pi's own install,
 	// but static subpath imports like @mariozechner/pi-ai/oauth are not always
-	// resolved correctly by the TS loader. Prefer normal resolution if available;
-	// otherwise derive Pi's bundled pi-ai path from the running pi CLI path.
-	const candidates: string[] = [];
+	// resolved correctly by the TS loader. Try the subpath first, then fall back to
+	// likely dist/oauth.js locations for global npm installs on Windows/Linux/WSL.
 	try {
-		const require = createRequire(import.meta.url);
-		candidates.push(join(dirname(require.resolve("@mariozechner/pi-ai")), "oauth.js"));
+		const oauth = (await import("@mariozechner/pi-ai/oauth")) as Partial<OpenAICodexOAuth>;
+		if (hasOpenAICodexOAuth(oauth)) return oauth;
 	} catch {
-		// The extension's own package.json may not depend on pi-ai. That's OK.
+		// Fall through to path-based resolution.
 	}
 
-	if (process.argv[1]) {
-		const piPackageRoot = dirname(dirname(process.argv[1]));
-		candidates.push(join(piPackageRoot, "node_modules", "@mariozechner", "pi-ai", "dist", "oauth.js"));
-	}
-
+	const candidates = getOAuthCandidates();
 	const oauthPath = candidates.find((candidate) => existsSync(candidate));
 	if (!oauthPath) {
 		throw new Error(`Could not locate Pi's @mariozechner/pi-ai oauth.js. Tried: ${candidates.join(", ")}`);
@@ -142,6 +137,51 @@ async function loadOpenAICodexOAuth(): Promise<OpenAICodexOAuth> {
 	}
 
 	return oauth as OpenAICodexOAuth;
+}
+
+function hasOpenAICodexOAuth(oauth: Partial<OpenAICodexOAuth>): oauth is OpenAICodexOAuth {
+	return typeof oauth.loginOpenAICodex === "function" && typeof oauth.refreshOpenAICodexToken === "function";
+}
+
+function addCandidate(candidates: string[], candidate: string | undefined) {
+	if (!candidate || candidates.includes(candidate)) return;
+	candidates.push(candidate);
+}
+
+function getOAuthCandidates(): string[] {
+	const candidates: string[] = [];
+
+	try {
+		const require = createRequire(import.meta.url);
+		addCandidate(candidates, join(dirname(require.resolve("@mariozechner/pi-ai")), "oauth.js"));
+	} catch {
+		// The extension's own package.json may not depend on pi-ai. That's OK.
+	}
+
+	const argvPaths = [process.argv[1]];
+	if (process.argv[1]) {
+		try {
+			argvPaths.push(realpathSync(process.argv[1]));
+		} catch {
+			// Ignore non-resolvable launcher paths.
+		}
+	}
+
+	for (const argvPath of argvPaths) {
+		if (!argvPath) continue;
+		const binDir = dirname(argvPath);
+		const packageRoot = dirname(binDir);
+		const packageParent = dirname(packageRoot);
+
+		addCandidate(candidates, join(packageRoot, "node_modules", "@mariozechner", "pi-ai", "dist", "oauth.js"));
+		addCandidate(candidates, join(packageParent, "node_modules", "@mariozechner", "pi-ai", "dist", "oauth.js"));
+		addCandidate(candidates, join(binDir, "node_modules", "@mariozechner", "pi-ai", "dist", "oauth.js"));
+	}
+
+	addCandidate(candidates, "/usr/local/lib/node_modules/@mariozechner/pi-ai/dist/oauth.js");
+	addCandidate(candidates, "/usr/lib/node_modules/@mariozechner/pi-ai/dist/oauth.js");
+
+	return candidates;
 }
 
 function registerCodexAlias(pi: ExtensionAPI, providerId: string, displayName: string, oauth: OpenAICodexOAuth) {
