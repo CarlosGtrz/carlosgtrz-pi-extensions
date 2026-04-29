@@ -11,7 +11,8 @@
     "check": "tsc -p tsconfig.json --noEmit",
     "publish:codex-aliases": "npm publish --access public -w @carlosgtrz/pi-codex-aliases",
     "publish:ansi-tools": "npm publish --access public -w @carlosgtrz/pi-ansi-tools",
-    "publish:terminal-bell": "npm publish --access public -w @carlosgtrz/pi-terminal-bell"
+    "publish:terminal-bell": "npm publish --access public -w @carlosgtrz/pi-terminal-bell",
+    "publish:run-timer": "npm publish --access public -w @carlosgtrz/pi-run-timer"
   },
   "repository": {
     "type": "git",
