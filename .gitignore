@@ -5,6 +5,7 @@ dist/
 build/
 coverage/
 *.tsbuildinfo
+*.zip
 .env
 .env.*
 .DS_Store

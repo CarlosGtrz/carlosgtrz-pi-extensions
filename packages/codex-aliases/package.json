@@ -1,6 +1,6 @@
 {
   "name": "@carlosgtrz/pi-codex-aliases",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Pi extension that adds personal and work aliases for the built-in OpenAI Codex provider.",
   "type": "module",
   "exports": "./src/index.ts",
@@ -20,7 +20,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CarlosGtrz/pi-extensions.git",
+    "url": "git+https://github.com/CarlosGtrz/carlosgtrz-pi-extensions.git",
     "directory": "packages/codex-aliases"
   },
   "publishConfig": {
