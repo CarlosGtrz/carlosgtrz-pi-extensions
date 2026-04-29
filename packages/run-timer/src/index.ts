@@ -6,16 +6,14 @@
  * - Duration of the previous completed run
  * - Longest run duration in the current session branch
  *
- * Installation:
- *   Save as ~/.pi/agent/extensions/turn-timer.ts
- *   Then in pi: /reload
  */
 
 import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-agent";
 
-const STATUS_KEY = "turn-timer";
-const STATE_TYPE = "turn-timer-state";
-const PROMPT_PREVIEW_LENGTH = 40;
+const STATUS_KEY = "run-timer";
+const STATE_TYPE = "run-timer-state";
+const LEGACY_STATE_TYPE = "turn-timer-state";
+const PROMPT_PREVIEW_LENGTH = 15;
 
 type TimerState = {
 	currentRunStartMs?: number;
@@ -94,7 +92,8 @@ export default function (pi: ExtensionAPI) {
 
 	function restoreState(ctx: ExtensionContext): void {
 		for (const entry of [...ctx.sessionManager.getBranch()].reverse()) {
-			if (entry.type !== "custom" || entry.customType !== STATE_TYPE) continue;
+			if (entry.type !== "custom") continue;
+			if (entry.customType !== STATE_TYPE && entry.customType !== LEGACY_STATE_TYPE) continue;
 			if (isTimerState(entry.data)) {
 				applyState(entry.data);
 			}
@@ -128,9 +127,10 @@ export default function (pi: ExtensionAPI) {
 		const indicator = working ? theme.fg("accent", "●") : theme.fg("dim", "○");
 		const elapsedText = working ? theme.fg("text", elapsed) : theme.fg("dim", elapsed);
 		const promptPreview = longestRunPrompt ? ` (${longestRunPrompt})` : "";
-		const stats = theme.fg("dim", `  prev ${prev}  max ${max}${promptPreview}`);
+		const label = theme.fg("dim", " run ");
+		const stats = theme.fg("dim", ` · prev ${prev} · max ${max}${promptPreview}`);
 
-		const status = `${indicator} ${elapsedText}${stats}`;
+		const status = `${indicator}${label}${elapsedText}${stats}`;
 		if (status === lastRendered) return;
 		lastRendered = status;
 
@@ -158,7 +158,6 @@ export default function (pi: ExtensionAPI) {
 		if (currentRunStartMs === undefined) {
 			currentRunStartMs = Date.now();
 			startTimer();
-			saveState();
 		}
 
 		render();
