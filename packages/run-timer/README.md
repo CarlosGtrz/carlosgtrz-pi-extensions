@@ -12,6 +12,8 @@ A run is one continuous busy period from the first `agent_start` after idle unti
 
 State is saved into the Pi session and restored after `/reload`.
 
+<img src="./images/screenshot.png" alt="Run timer screenshot" width="600">
+
 ## Install
 
 ```bash

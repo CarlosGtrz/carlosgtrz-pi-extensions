@@ -7,6 +7,8 @@ Pi extension that registers two aliases for Pi's built-in OpenAI Codex provider:
 
 This is useful when you have both a personal ChatGPT account and a work ChatGPT account. You can keep both logged in at the same time, then switch between them using Pi's provider/model selection instead of logging in and out.
 
+<img src="./images/screenshot.png" alt="Codex aliases screenshot" width="600">
+
 ## Install
 
 ```bash

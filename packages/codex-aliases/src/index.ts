@@ -196,6 +196,7 @@ function registerCodexAlias(pi: ExtensionAPI, providerId: string, displayName: s
 		cost: { ...model.cost },
 		contextWindow: model.contextWindow,
 		maxTokens: model.maxTokens,
+		thinkingLevelMap: model.thinkingLevelMap ? { ...model.thinkingLevelMap } : undefined,
 		compat: model.compat,
 	}));
 

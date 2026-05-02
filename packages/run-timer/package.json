@@ -1,11 +1,12 @@
 {
   "name": "@carlosgtrz/pi-run-timer",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Pi extension that shows elapsed, previous, and longest agent run times in the footer.",
   "type": "module",
   "exports": "./src/index.ts",
   "files": [
     "src",
+    "images",
     "README.md",
     "LICENSE"
   ],
