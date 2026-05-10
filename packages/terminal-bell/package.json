@@ -1,6 +1,6 @@
 {
   "name": "@carlosgtrz/pi-terminal-bell",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Pi extension that rings the terminal bell when an agent run finishes after a configurable timeout.",
   "type": "module",
   "exports": "./src/index.ts",
@@ -28,7 +28,7 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@mariozechner/pi-coding-agent": "*"
+    "@earendil-works/pi-coding-agent": "*"
   },
   "pi": {
     "extensions": [

@@ -26,8 +26,8 @@
   "author": "CarlosGtrz",
   "license": "MIT",
   "devDependencies": {
-    "@mariozechner/pi-ai": "*",
-    "@mariozechner/pi-coding-agent": "*",
+    "@earendil-works/pi-ai": "*",
+    "@earendil-works/pi-coding-agent": "*",
     "@types/node": "^22.0.0",
     "typebox": "*",
     "typescript": "^5.9.0"

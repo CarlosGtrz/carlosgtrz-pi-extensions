@@ -1,12 +1,12 @@
-import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-agent";
-import { createAssistantMessageEventStream, getModels, streamSimple } from "@mariozechner/pi-ai";
+import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
+import { createAssistantMessageEventStream, getModels, streamSimple } from "@earendil-works/pi-ai";
 import type {
 	AssistantMessage,
 	AssistantMessageEvent,
 	Model,
 	OAuthCredentials,
 	OAuthLoginCallbacks,
-} from "@mariozechner/pi-ai";
+} from "@earendil-works/pi-ai";
 import { existsSync, realpathSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
@@ -114,12 +114,12 @@ export default async function codexAliases(pi: ExtensionAPI) {
 }
 
 async function loadOpenAICodexOAuth(): Promise<OpenAICodexOAuth> {
-	// Pi's extension loader resolves @mariozechner/pi-ai from Pi's own install,
-	// but static subpath imports like @mariozechner/pi-ai/oauth are not always
+	// Pi's extension loader resolves @earendil-works/pi-ai from Pi's own install,
+	// but static subpath imports like @earendil-works/pi-ai/oauth are not always
 	// resolved correctly by the TS loader. Try the subpath first, then fall back to
 	// likely dist/oauth.js locations for global npm installs on Windows/Linux/WSL.
 	try {
-		const oauth = (await import("@mariozechner/pi-ai/oauth")) as Partial<OpenAICodexOAuth>;
+		const oauth = (await import("@earendil-works/pi-ai/oauth")) as Partial<OpenAICodexOAuth>;
 		if (hasOpenAICodexOAuth(oauth)) return oauth;
 	} catch {
 		// Fall through to path-based resolution.
@@ -128,12 +128,12 @@ async function loadOpenAICodexOAuth(): Promise<OpenAICodexOAuth> {
 	const candidates = getOAuthCandidates();
 	const oauthPath = candidates.find((candidate) => existsSync(candidate));
 	if (!oauthPath) {
-		throw new Error(`Could not locate Pi's @mariozechner/pi-ai oauth.js. Tried: ${candidates.join(", ")}`);
+		throw new Error(`Could not locate Pi's @earendil-works/pi-ai oauth.js. Tried: ${candidates.join(", ")}`);
 	}
 
 	const oauth = (await import(pathToFileURL(oauthPath).href)) as Partial<OpenAICodexOAuth>;
 	if (typeof oauth.loginOpenAICodex !== "function" || typeof oauth.refreshOpenAICodexToken !== "function") {
-		throw new Error(`Pi's @mariozechner/pi-ai oauth.js does not expose the required OpenAI Codex OAuth helpers: ${oauthPath}`);
+		throw new Error(`Pi's @earendil-works/pi-ai oauth.js does not expose the required OpenAI Codex OAuth helpers: ${oauthPath}`);
 	}
 
 	return oauth as OpenAICodexOAuth;
@@ -153,7 +153,7 @@ function getOAuthCandidates(): string[] {
 
 	try {
 		const require = createRequire(import.meta.url);
-		addCandidate(candidates, join(dirname(require.resolve("@mariozechner/pi-ai")), "oauth.js"));
+		addCandidate(candidates, join(dirname(require.resolve("@earendil-works/pi-ai")), "oauth.js"));
 	} catch {
 		// The extension's own package.json may not depend on pi-ai. That's OK.
 	}
@@ -173,14 +173,14 @@ function getOAuthCandidates(): string[] {
 		const packageRoot = dirname(binDir);
 		const packageParent = dirname(packageRoot);
 
-		addCandidate(candidates, join(packageRoot, "node_modules", "@mariozechner", "pi-ai", "dist", "oauth.js"));
-		addCandidate(candidates, join(packageParent, "node_modules", "@mariozechner", "pi-ai", "dist", "oauth.js"));
-		addCandidate(candidates, join(binDir, "node_modules", "@mariozechner", "pi-ai", "dist", "oauth.js"));
+		addCandidate(candidates, join(packageRoot, "node_modules", "@earendil-works", "pi-ai", "dist", "oauth.js"));
+		addCandidate(candidates, join(packageParent, "node_modules", "@earendil-works", "pi-ai", "dist", "oauth.js"));
+		addCandidate(candidates, join(binDir, "node_modules", "@earendil-works", "pi-ai", "dist", "oauth.js"));
 	}
 
-	addCandidate(candidates, "/opt/homebrew/lib/node_modules/@mariozechner/pi-ai/dist/oauth.js");
-	addCandidate(candidates, "/usr/local/lib/node_modules/@mariozechner/pi-ai/dist/oauth.js");
-	addCandidate(candidates, "/usr/lib/node_modules/@mariozechner/pi-ai/dist/oauth.js");
+	addCandidate(candidates, "/opt/homebrew/lib/node_modules/@earendil-works/pi-ai/dist/oauth.js");
+	addCandidate(candidates, "/usr/local/lib/node_modules/@earendil-works/pi-ai/dist/oauth.js");
+	addCandidate(candidates, "/usr/lib/node_modules/@earendil-works/pi-ai/dist/oauth.js");
 
 	return candidates;
 }

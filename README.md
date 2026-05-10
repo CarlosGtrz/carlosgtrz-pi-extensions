@@ -1,6 +1,6 @@
 # CarlosGtrz Pi Extensions
 
-A collection of simple [pi](https://github.com/badlogic/pi-mono) extensions I created for personal use.
+A collection of simple [pi](https://github.com/earendil-works/pi) extensions I created for personal use.
 
 ## Packages
 
